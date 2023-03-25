@@ -93,7 +93,7 @@ def main():
 
 def headers(string: str):
     split = string.split(":")
-    return {split[0]:split[1]}
+    return {split[0].strip():split[1].strip()}
 
 if __name__ == "__main__":
     parser = ArgumentParser(description="Dump Python application files using LFI, traverse all imports and build a copy of the original")
@@ -103,7 +103,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     LFI_URL = args.url if args.url.endswith("/") else args.url + "/"
-    MAIN_FILE = args.main
+    MAIN_FILE = args.main.removeprefix("/")
     HEADERS = args.headers
     PACKAGE_NAME = LFI_URL.split('/')[-2]
     ROOT_DIR = "dump"
