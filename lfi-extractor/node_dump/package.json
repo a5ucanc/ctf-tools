@@ -1,0 +1,16 @@
+{
+  "name": "node_dump",
+  "version": "1.0.0",
+  "description": "dump backend source using lfi",
+  "main": "node_dump.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "acorn": "^8.8.2",
+    "acorn-walk": "^8.2.0",
+    "prompt-sync": "^4.2.0"
+  }
+}
